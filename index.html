@@ -2,51 +2,98 @@
 <html>
 
 <head>
-    <title></title>
-    <script src="js/campo-minado.js"></script>
+  <title></title>
+  <script src="js/campo-minado.js"></script>
 </head>
 
 <body>
-    <div id="exibir-execucao"></div>
+  <div id="exibir-execucao"></div>
 
-    <script>
-        var campoMinado = new CampoMinado();
+  <script>
+    var campoMinado = new CampoMinado();
 
 
-        document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
-        document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+    document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
+    document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
 
-        // Realize sua codificação a partir deste ponto, boa sorte!
+    // Realize sua codificação a partir deste ponto, boa sorte!
 
-        let valor = campoMinado.JogoStatus();
+    let valor = campoMinado.JogoStatus();
 
-        function Resultado() {
-            if (valor === 0) {
-                resultado = 'Jogo em Aberto';
-            } else if (valor === 1) {
-                resultado = 'Vitoria';
-            } else {
-                resultado = 'Game Over'
+    function Resultado() {
+      if (valor === 0) {
+        resultado = 'Jogo em Aberto';
+      } else if (valor === 1) {
+        resultado = 'Vitoria';
+      } else {
+        resultado = 'Game Over'
+      }
+      return resultado;
+    }
+
+    /* Necessário checar 8 espaços ao redor do i
+    ------------
+    0.0 0.1 0.2
+    1.0 1.1 1.2
+    2.0 2.1 2.2
+
+    (l-1, c-1) (l-1, c) (l-1, c+1)
+    (l, c-1) (l, c) (l, c+1)
+    (l+1, c-1) (l+1, c) (l+1, c+1) 
+
+
+    ------------
+    */
+
+
+    let matriz = campoMinado.Tabuleiro().split('\n')
+
+    for (let l = 0; l < 9; l++) {
+      for (let c = 0; c < 9; c++) {
+        if (matriz[l][c] !== "0" && matriz[l][c] !== "-") {
+          //converte o valor da casa para inteiro
+          let valor = parseInt(matriz[l][c]);
+
+          //primeiro seta flags para quando nao existem posições acima/abaixo/esquerda/direita
+          let semAcima = l === 0 ? true : false;
+          let semAbaixo = l === 8 ? true : false;
+          let semAnterior = c === 0 ? true : false;
+          let semPosterior = c === 8 ? true : false;
+
+          //flags para as posições abertas superior/inferior esquerda/centro/direita, anterior, posteior
+          let se, sc, sd, an, po, ie, ic, id = false;
+
+          if (!semAcima && !semAbaixo && !semAnterior && !semPosterior) {
+
+            if (matriz[l - 1][c] === "0") {
+              campoMinado.Abrir(matriz[l][c]);
             }
-            return resultado;
+            if (matriz[l - 1][c + 1] === "0") {
+              campoMinado.Abrir(matriz[l][c]);
+            }
+            if (matriz[l][c - 1] === "0") {
+              campoMinado.Abrir(matriz[l][c]);
+            }
+            if (matriz[l][c + 1] === "0") {
+              campoMinado.Abrir(matriz[l][c]);
+            }
+            if (matriz[l + 1][c - 1] === "0") {
+              campoMinado.Abrir(matriz[l][c]);
+            }
+            if (matriz[l + 1][c] === "0") {
+              campoMinado.Abrir(matriz[l][c]);
+            }
+            if (matriz[l + 1][c + 1] === "0") {
+              campoMinado.Abrir(matriz[l][c]);
+            }
+          }
         }
-
-        /* Necessário checar 8 espaços ao redor do i
-        ------------
-        0.0 0.1 0.2
-        1.0 1.1 1.2
-        2.0 2.1 2.2
-        ------------
-        */
-
-        /*    for (let i = 0; i < linha; i++) {
-               for (let k = 0; k < coluna; k++)
-           } */
-
-
-
-        document.getElementById('exibir-execucao').innerHTML += '----------- Status: ' + Resultado() + ' -----------';
-    </script>
+      }
+    }
+    document.getElementById('exibir-execucao').innerHTML += '----------- Status: ' + Resultado() +
+      ' -----------';
+    document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+  </script>
 </body>
 
 </html>
