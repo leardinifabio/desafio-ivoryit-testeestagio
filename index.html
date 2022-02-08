@@ -12,34 +12,22 @@
   <script>
     var campoMinado = new CampoMinado();
 
-
-    document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
-    document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+    document.getElementById("exibir-execucao").innerHTML +=
+      "----------- Início do jogo -----------";
+    document.getElementById("exibir-execucao").innerHTML +=
+      "<pre>" + campoMinado.Tabuleiro() + "</pre>";
 
     // Realize sua codificação a partir deste ponto, boa sorte!
 
-    /* Necessário checar 8 espaços ao redor do i
-    ------------
-    0.0 0.1 0.2
-    1.0 1.1 1.2
-    2.0 2.1 2.2
+    tela = document.getElementById("exibir-execucao");
 
-    (l-1, c-1) (l-1, c) (l-1, c+1)
-    (l, c-1) (l, c) (l, c+1)
-    (l+1, c-1) (l+1, c) (l+1, c+1) 
-
-
-    ------------
-    */
-
-
-    let matriz = campoMinado.Tabuleiro().split('\n')
+    let matriz = campoMinado.Tabuleiro().split("\n");
     let bombas = [];
 
     for (let l = 0; l < 9; l++) {
       for (let c = 0; c < 9; c++) {
         if (matriz[l][c] !== "0" && matriz[l][c] !== "-") {
-          //converte o valor da casa para inteiro
+          // converte o valor da casa para inteiro
           let valor = parseInt(matriz[l][c]);
 
           //primeiro seta flags para quando não existem posições acima/abaixo/esquerda/direita
@@ -57,75 +45,82 @@
           //contador de bombas detectadas no entorno
           var bombasEntorno = 0;
 
+          // confere as posições adjacentes, se estão disponíveis ou se já tem bomba marcada
           if (!semAcima) {
-            if (matriz[l - 1][c - 1] === "-") { //diagonal sup esquerda
+            if (matriz[l - 1][c - 1] === "-") { // diagonal sup esquerda
               open++;
               se = true;
-              if (!JSON.stringify(bombas).includes(JSON.stringify([l - 1, c - 1]))) {
+              if (JSON.stringify(bombas).includes(JSON.stringify([l - 1, c - 1]))) {
                 bombasEntorno++;
               }
             }
-            if (matriz[l - 1][c] === "-") { //acima
+
+            if (matriz[l - 1][c] === "-") { // acima
               open++;
               sc = true;
-              if (!JSON.stringify(bombas).includes(JSON.stringify([l - 1, c]))) {
+              if (JSON.stringify(bombas).includes(JSON.stringify([l - 1, c]))) {
                 bombasEntorno++;
               }
             }
-            if (matriz[l - 1][c + 1] === "-") { //diagonal sup direita
+
+            if (matriz[l - 1][c + 1] === "-") { // diagonal sup direita
               open++;
               sd = true;
-              if (!JSON.stringify(bombas).includes(JSON.stringify([l - 1, c + 1]))) {
+              if (JSON.stringify(bombas).includes(JSON.stringify([l - 1, c + 1]))) {
                 bombasEntorno++;
               }
             }
           }
-          if (!semAnterior && matriz[1][c - 1] === "0") { //anterior
+
+          if (!semAnterior && matriz[l][c - 1] === "-") { // anterior
             open++;
             an = true;
-            if (!JSON.stringify(bombas).includes(JSON.stringify([l, c - 1]))) {
+            if (JSON.stringify(bombas).includes(JSON.stringify([l, c - 1]))) {
               bombasEntorno++;
             }
           }
 
-          if (!semPosterior && matriz[1][c + 1] === "0") { //posterior
+          if (semPosterior && matriz[l][c + 1] === "-") { //posterior
             open++;
             po = true;
-            if (!JSON.stringify(bombas).includes(JSON.stringify([l, c + 1]))) {
+            if (JSON.stringify(bombas).includes(JSON.stringify([l, c + 1]))) {
               bombasEntorno++;
             }
           }
+
           if (!semAbaixo) {
-            if (matriz[l + 1][c - 1] === "0") { //diagonal inf esquerda
+            if (matriz[l + 1][c - 1] === "-") { // diagonal inf esquerda
               open++;
               ie = true;
-              if (!JSON.stringify(bombas).includes(JSON.stringify([l + 1, c - 1]))) {
+              if (JSON.stringify(bombas).includes(JSON.stringify([l + 1, c - 1]))) {
                 bombasEntorno++;
               }
             }
-            if (matriz[l + 1][c] === "0") { //inferior
+
+            if (matriz[l + 1][c] === "-") { // acima
               open++;
               ic = true;
-              if (!JSON.stringify(bombas).includes(JSON.stringify([l + 1, c]))) {
+              if (JSON.stringify(bombas).includes(JSON.stringify([l + 1, c]))) {
                 bombasEntorno++;
               }
             }
-            if (matriz[l + 1][c + 1] === "0") { //diagonal inferior direita
+
+            if (matriz[l + 1][c + 1] === "-") { // diagonal inf direita
               open++;
               id = true;
-              if (!JSON.stringify(bombas).includes(JSON.stringify([l + 1, c + 1]))) {
+              if (JSON.stringify(bombas).includes(JSON.stringify([l + 1, c + 1]))) {
                 bombasEntorno++;
               }
             }
           }
+
           if (valor === open) {
             // verifica as flags para as posições existentes e adiciona as bombas
 
             // linha de cima
             if (se && !JSON.stringify(bombas).includes(JSON.stringify([l - 1, c - 1]))) {
               bombas.push([l - 1, c - 1]);
-              document.getElementById("exibir-execucao").innerHTML +=
-                `<br /> bomba encontrada em [${l - 1}][${c - 1}]`;
+              tela.innerHTML += `<br /> bomba encontrada em [${l - 1}][${c - 1}]`;
               open--;
             }
             if (sc && !JSON.stringify(bombas).includes(JSON.stringify([l - 1, c]))) {
@@ -135,39 +130,34 @@
             }
             if (sd && !JSON.stringify(bombas).includes(JSON.stringify([l - 1, c + 1]))) {
               bombas.push([l - 1, c + 1]);
-              document.getElementById("exibir-execucao").innerHTML +=
-                `<br /> bomba encontrada em [${l - 1}][${c + 1}]`;
+              tela.innerHTML += `<br /> bomba encontrada em [${l - 1}][${c + 1}]`;
               open--;
             }
-
             //mesma linha
             if (an && !JSON.stringify(bombas).includes(JSON.stringify([l, c - 1]))) {
               bombas.push([l, c - 1]);
-              document.getElementById("exibir-execucao").innerHTML += `<br /> bomba encontrada em [${l}][${c - 1}]`;
+              tela.innerHTML += `<br /> bomba encontrada em [${l}][${c - 1}]`;
               open--;
             }
             if (po && !JSON.stringify(bombas).includes(JSON.stringify([l, c + 1]))) {
               bombas.push([l, c + 1]);
-              document.getElementById("exibir-execucao").innerHTML += `<br /> bomba encontrada em [${l}][${c + 1}]`;
+              tela.innerHTML += `<br /> bomba encontrada em [${l}][${c + 1}]`;
               open--;
             }
-
             //linha de baixo
             if (ie && !JSON.stringify(bombas).includes(JSON.stringify([l + 1, c - 1]))) {
               bombas.push([l + 1, c - 1]);
-              document.getElementById("exibir-execucao").innerHTML +=
-                `<br /> bomba encontrada em [${l + 1}][${c - 1}]`;
+              tela.innerHTML += `<br /> bomba encontrada em [${l + 1}][${c - 1}]`;
               open--;
             }
             if (ic && !JSON.stringify(bombas).includes(JSON.stringify([l + 1, c]))) {
               bombas.push([l + 1, c]);
-              document.getElementById("exibir-execucao").innerHTML += `<br /> bomba encontrada em [${l + 1}][${c}]`;
+              tela.innerHTML += `<br /> bomba encontrada em [${l + 1}][${c}]`;
               open--;
             }
             if (id && !JSON.stringify(bombas).includes(JSON.stringify([l + 1, c + 1]))) {
               bombas.push([l + 1, c + 1]);
-              document.getElementById("exibir-execucao").innerHTML +=
-                `<br /> bomba encontrada em [${l + 1}][${c + 1}]`;
+              tela.innerHTML += `<br /> bomba encontrada em [${l + 1}][${c + 1}]`;
               open--;
             }
           }
@@ -175,10 +165,16 @@
       }
     }
 
+    tela.innerHTML += `<br/><br/>----------- Status: ${
+        campoMinado.JogoStatus() === 0
+          ? "Em aberto"
+          : campoMinado.JogoStatus() === 1
+          ? "Venceu"
+          : "Perdeu"
+      } -----------`;
 
-
-    document.getElementById('exibir-execucao').innerHTML +=
-      `<br/><br/>----------- Status: ${campoMinado.JogoStatus() === 0 ? "Em Aberto" : campoMinado.JogoStatus() === 1 ? "Venceu" : "Perdeu"} -----------`;
+    tela.innerHTML += `<pre>${campoMinado.Tabuleiro()} </pre>`;
+    console.log(bombas)
   </script>
 </body>
 
