@@ -17,20 +17,6 @@
     document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
 
     // Realize sua codificação a partir deste ponto, boa sorte!
-
-    let valor = campoMinado.JogoStatus();
-
-    function Resultado() {
-      if (valor === 0) {
-        resultado = 'Jogo em Aberto';
-      } else if (valor === 1) {
-        resultado = 'Vitoria';
-      } else {
-        resultado = 'Game Over'
-      }
-      return resultado;
-    }
-
     /* Necessário checar 8 espaços ao redor do i
     ------------
     0.0 0.1 0.2
@@ -47,52 +33,100 @@
 
 
     let matriz = campoMinado.Tabuleiro().split('\n')
+    let bombas = [];
 
-    for (let l = 0; l < 9; l++) {
-      for (let c = 0; c < 9; c++) {
+    for (let l = 0; l < 10; l++) {
+      for (let c = 0; c < 10; c++) {
         if (matriz[l][c] !== "0" && matriz[l][c] !== "-") {
           //converte o valor da casa para inteiro
           let valor = parseInt(matriz[l][c]);
 
-          //primeiro seta flags para quando nao existem posições acima/abaixo/esquerda/direita
+          //primeiro seta flags para quando não existem posições acima/abaixo/esquerda/direita
           let semAcima = l === 0 ? true : false;
           let semAbaixo = l === 8 ? true : false;
           let semAnterior = c === 0 ? true : false;
           let semPosterior = c === 8 ? true : false;
 
-          //flags para as posições abertas superior/inferior esquerda/centro/direita, anterior, posteior
+          //flags para as posições abertas superior/inferior esquerdo/centro/direito, anterior, posterior
           let se, sc, sd, an, po, ie, ic, id = false;
 
-          if (!semAcima && !semAbaixo && !semAnterior && !semPosterior) {
+          //contador de blocos a serem abertos no entorno do avaliado
+          let open = 0;
 
-            if (matriz[l - 1][c] === "0") {
-              campoMinado.Abrir(matriz[l][c]);
+          //contador de bombas detectadas no entorno
+          var bombasEntorno = 0;
+
+          if (!semAcima) {
+            if (matriz[l - 1][c - 1] === "-") { //diagonal sup esquerda
+              open++;
+              se = true;
+              if (!JSON.stringify(bombas).includes(JSON.stringify([l - 1, c - 1]))) {
+                bombasEntorno++;
+              }
             }
-            if (matriz[l - 1][c + 1] === "0") {
-              campoMinado.Abrir(matriz[l][c]);
-            }
-            if (matriz[l][c - 1] === "0") {
-              campoMinado.Abrir(matriz[l][c]);
-            }
-            if (matriz[l][c + 1] === "0") {
-              campoMinado.Abrir(matriz[l][c]);
-            }
-            if (matriz[l + 1][c - 1] === "0") {
-              campoMinado.Abrir(matriz[l][c]);
-            }
-            if (matriz[l + 1][c] === "0") {
-              campoMinado.Abrir(matriz[l][c]);
-            }
-            if (matriz[l + 1][c + 1] === "0") {
-              campoMinado.Abrir(matriz[l][c]);
+            if (matriz[l - 1][c] === "-") { //acima
+              open++;
+              sc = true;
+              if (!JSON.stringify(bombas).includes(JSON.stringify([l - 1, c]))) {
+                bombasEntorno++;
+              }
+              if (matriz[l - 1][c + 1] === "-") { //diagonal sup direita
+                open++;
+                sd = true;
+                if (!JSON.stringify(bombas).includes(JSON.stringify([l - 1, c + 1]))) {
+                  bombasEntorno++;
+                }
+              }
+              if (!semAnterior && matriz[1][c - 1] === "0") { //anterior
+                open++;
+                an = true;
+                if (!JSON.stringify(bombas).includes(JSON.stringify([l, c - 1]))) {
+                  bombasEntorno++;
+                }
+              }
+
+              if (!semPosterior && matriz[1][c + 1] === "0") { //posterior
+                open++;
+                po = true;
+                if (!JSON.stringify(bombas).includes(JSON.stringify([l, c + 1]))) {
+                  bombasEntorno++;
+                }
+              }
+              if (!semAbaixo) {
+                if (matriz[l + 1][c - 1] === "0") { //diagonal inf esquerda
+                  open++;
+                  ie = true;
+                  if (!JSON.stringify(bombas).includes(JSON.stringify([l + 1, c - 1]))) {
+                    bombasEntorno++;
+                  }
+                }
+                if (matriz[l + 1][c] === "0") { //inferior
+                  open++;
+                  ic = true;
+                  if (!JSON.stringify(bombas).includes(JSON.stringify([l + 1, c]))) {
+                    bombasEntorno++;
+                  }
+                }
+                if (matriz[l + 1][c + 1] === "0") { //diagonal inferior direita
+                  open++;
+                  id = true;
+                  if (!JSON.stringify(bombas).includes(JSON.stringify([l + 1, c + 1]))) {
+                    bombasEntorno++;
+                  }
+                }
+              }
             }
           }
         }
       }
+
+
+
+      document.getElementById('exibir-execucao').innerHTML +=
+        `<br/><br/>----------- Status: ${campoMinado.JogoStatus() === 0 ? "Em Aberto" : campoMinado.JogoStatus() === 1 ? "Venceu" : "Perdeu"} -----------`;
+
+      document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
     }
-    document.getElementById('exibir-execucao').innerHTML += '----------- Status: ' + Resultado() +
-      ' -----------';
-    document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
   </script>
 </body>
 
