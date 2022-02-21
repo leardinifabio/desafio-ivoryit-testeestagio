@@ -181,3 +181,30 @@ Abrindo casa: linha(6) / coluna(9)
 000000011
 000000000
 ```
+
+## Resultado - Instruções do Código
+1. Cria um Array (vazio) de bombas;
+2. Condição de executar o código enquanto o jogo estiver aberto (campoMinado.JogoStatus() === 0);
+3. Começa a percorrer todas as linhas e colunas da matriz (for dentro do for);
+
+## Etapa 01
+1. Cria a variável matriz e transforma a string em um array de strings (método .split), criando uma matriz;
+2. Cria uma série de instruções para que a gente possa conferir as posições;
+ 2.1. Todo casa percorrida que for diferente de 0 e "-" é um número inteiro, dito isso, a gente transforma o valor (string) em um número inteiro;
+ 2.2. Seta flags para as posições que não possuem Acima, Abaixo, Esquerda e/ou Direita;
+ 2.3. Seta flags para posições abertas/fechadas ao redor do item analisado;
+ 2.4. Cria um contador de blocos com possibilidade de serem abertos ao redor do item avaliado;
+ 2.5. Cria um contador de bombas encontradas ao redor do item avaliado;
+3. Começa a conferir cada posição ao redor, sempre com as respectivas exceções.
+4. Se a condição for satisfatória, add ao contador "open";
+5. Se a condição for satisfatória, marca a flag como true;
+6. Confere dentro do array de bombas se a posição não esta contida. Caso verdadeiro, add ao contador "bombasEntorno";
+
+## Etapa 02
+1. Se o valor analisado for igual o número de casas possíveis de abrir, então significa que a(s) casa(s) contem bomba.
+2. Verifica as flags e posições e caso não estejam no array de bombas, add e exibe a mensagem.
+ 2.1. Para evitar repetição de informações no array de bombas e exibição da mensagem, for add a condição de já não conter a informação dentro do array. 
+
+## Etapa 03
+1. Se o valor analisado for igual ao número de bombas no entorno (bombasEntorno), então significa que a(s) casa(s) são números. 
+2. Verifica as flags e posição. Caso não estejam no array de bombas, pode executar a função para abrir (campoMinado.Abrir(l, c)) e exibem mensagem;
